@@ -174,6 +174,7 @@ void Welcome_screen()
 
 void Draw_Butt(bool is_frame, int phrase_id, COORD coords)
 {
+    if(!is_frame){}
     
     int butt[3][20];
 
@@ -334,17 +335,10 @@ void Main_menu()
 
 void Drops()
 {
-
     vector <vector<COORD>> drops;
-    HANDLE hout_menu = GetStdHandle(STD_OUTPUT_HANDLE);
-    CONSOLE_CURSOR_INFO ci2;
-    ci2.dwSize = 100;
-    ci2.bVisible = false;
-    SetConsoleCursorInfo(hout_menu, &ci2);
-
     
     short x;
-    int new_drop = 0;
+    int now_use_drop = 0;
     short min;
     int width = 1920;
     int height = 1080;
@@ -355,39 +349,42 @@ void Drops()
 
     while (true)
     {
-
+        
         x = rand() % 210;
         //создание новой сопли
-        for (int i = 0; i < 6; i++)
+        for (int now_use_element = 0; now_use_element < 6; now_use_element++)
         {
-            
-            COORD tmp = { x,i - 6 };
-            drops[new_drop].push_back(tmp);
-            //dropsY[new_drop].push_back(i-6);
-            if (drops[new_drop][i].Y >= 0) {
-                SetConsoleCursorPosition(hout_menu, { drops[new_drop][i].X,drops[new_drop][i].Y });
-                if (i % 2 == 0) cout << "X";
+            COORD tmp = { x,now_use_element - 6 };
+            drops[now_use_drop].push_back(tmp);
+            if (drops[now_use_drop][now_use_element].Y >= 0) {
+                SetConsoleCursorPosition(hout_menu, { drops[now_use_drop][now_use_element].X,drops[now_use_drop][now_use_element].Y });
+                if (now_use_element % 2 == 0) cout << "X";
                 else cout << "O";
             }
         }
         //передвижение сопли от конца в начало
-        for (size_t i = 0; i < drops.size(); i++)
+        for (size_t  now_use_drop = 0; now_use_drop < drops.size(); now_use_drop++)
         {
-            short min = drops[i][0].Y;
+            short min = drops[now_use_drop][0].Y;
             int min_index = 0;
-            
-            for (int j = 0; j < 6; j++)
+
+            //Нахождение максимального значения капли
+            for (int now_use_element = 0; now_use_element < 6; now_use_element++)
             {
-                if (drops[i][j].Y < min)
+                if (drops[now_use_drop][now_use_element].Y > min)
                 {
-                    min = drops[i][j].Y;
-                    min_index = j;
+                    min = drops[now_use_drop][now_use_element].Y;
+                    min_index = now_use_element;
                 }
             }
-                          
+            for (int now_use_element = 0; now_use_element < 6; now_use_element++)
+            {
+                COORD tmp = drops[now_use_drop][now_use_element];
+                if(tmp.Y>54 || tmp.Y<0 )
+                drops.
             
-            if (drops[i][min_index].Y+6 < 54) {
-                if (drops[i][min_index].Y > cmain.Y-1 && drops[i][min_index].Y < (cmain.Y + 11) && drops[i][min_index].X > cmain.X-1 && drops[i][min_index].X < (cmain.X+47)  || drops[i][min_index].Y > cmain.Y+11 && drops[i][min_index].Y < (cmain.Y + 22) && drops[i][min_index].X > cmain.X+13 && drops[i][min_index].X < (cmain.X + 34))
+            /*if (drops[now_use_drop][max_index].Y < 54) {
+                if (drops[now_use_drop][min_index].Y > cmain.Y-1 && drops[now_use_drop][min_index].Y < (cmain.Y + 11) && drops[i][min_index].X > cmain.X-1 && drops[i][min_index].X < (cmain.X+47)  || drops[i][min_index].Y > cmain.Y+11 && drops[i][min_index].Y < (cmain.Y + 22) && drops[i][min_index].X > cmain.X+13 && drops[i][min_index].X < (cmain.X + 34))
                 {
                     drops[i][min_index].Y += (short)6; 
                 }
@@ -418,7 +415,7 @@ void Drops()
                 SetConsoleCursorPosition(hout_menu, { drops[i][min_index].X,drops[i][min_index].Y });
                 cout << " ";
                 drops[i][min_index].Y += (short)6;
-            }
+            }*/
         }
         //проверка на выход за нижнюю границу
         for (size_t i = 0; i < drops.size(); ++i)
@@ -426,11 +423,11 @@ void Drops()
                 if (drops[i][j].Y == (short)59)
                 {
                     drops.erase(drops.begin() + i);
-                    new_drop--;
+                    now_use_drop--;
                 }
         Sleep(20);
         //создание места для новой сопли
-        new_drop++;
+        now_use_drop++;
         drops.push_back(vector<COORD>());
     }
 
@@ -449,8 +446,6 @@ int main()
     while (true) {
         system("cls");
         Welcome_screen();
-
-        //thread th(Drops);
 
         Main_menu();
         
