@@ -10,7 +10,7 @@ void letter_E();
 void letter_R();
 void letter_I();
 void letter_S();
-
+void Drops();
 void Game(int mode_menu);
 void Check();
 void Create_field();
