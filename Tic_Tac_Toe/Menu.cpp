@@ -347,19 +347,19 @@ void Drops() {
         }
         for (int now_use_element = 0; now_use_element < drops[now_use_drop].size(); now_use_element++){
             COORD tmp = drops[now_use_drop][now_use_element];
+            COORD tmp_tmp = drops[now_use_drop][now_use_element];
+            tmp_tmp.Y=tmp_tmp-6;
+            if (tmp_tmp.X >= 96 && tmp_tmp.X < 116 && tmp_tmp.Y >= 10 && tmp_tmp.Y <= 36) { continue; }
+            else if (tmp_tmp.X >= 82 && tmp_tmp.X <= 95 && tmp_tmp.Y >= 10 && tmp_tmp.Y < 21) { continue; }
+            else if (tmp_tmp.X >= 115 && tmp_tmp.X <= 128 && tmp_tmp.Y >= 10 && tmp_tmp.Y < 21) { continue; }
+            else{
+                SetConsoleCursorPosition(hout_menu, { drops[now_use_drop][min_index].X, drops[now_use_drop][min_index].Y-  6 });
+                cout << " ";
+            }
             if (tmp.X >= 96 && tmp.X < 116 && tmp.Y >= 10 && tmp.Y <= 36) { continue; }
             else if (tmp.X >= 82 && tmp.X <= 95 && tmp.Y >= 10 && tmp.Y < 21) { continue; }
             else if (tmp.X >= 115 && tmp.X <= 128 && tmp.Y >= 10 && tmp.Y < 21) { continue; }
             else{
-                COORD tmp_tmp = drops[now_use_drop][now_use_element];
-                tmp_tmp.Y=tmp_tmp-6;
-                if (tmp_tmp.X >= 96 && tmp_tmp.X < 116 && tmp_tmp.Y >= 10 && tmp_tmp.Y <= 36) { continue; }
-                else if (tmp_tmp.X >= 82 && tmp_tmp.X <= 95 && tmp_tmp.Y >= 10 && tmp_tmp.Y < 21) { continue; }
-                else if (tmp_tmp.X >= 115 && tmp_tmp.X <= 128 && tmp_tmp.Y >= 10 && tmp_tmp.Y < 21) { continue; }
-                else{
-                    SetConsoleCursorPosition(hout_menu, { drops[now_use_drop][min_index].X, drops[now_use_drop][min_index].Y-  6 });
-                    cout << " ";
-                }
                 SetConsoleCursorPosition(hout_menu, {drops[now_use_drop][now_use_element].X, drops[now_use_drop][now_use_element].Y});
                 if (now_use_element % 2 == 0) cout << "X";
                 else cout << "O";
