@@ -345,19 +345,30 @@ void Drops() {
         {
             continue;
         }
-        for (int now_use_element = 0; now_use_element < drops[now_use_drop].size(); now_use_element++){
-            COORD tmp = drops[now_use_drop][now_use_element];
-            if (tmp.X >= 96 && tmp.X < 116 && tmp.Y >= 10 && tmp.Y <= 36) { continue; }
-            else if (tmp.X >= 82 && tmp.X <= 95 && tmp.Y >= 10 && tmp.Y < 21) { continue; }
-            else if (tmp.X >= 115 && tmp.X <= 128 && tmp.Y >= 10 && tmp.Y < 21) { continue; }
+        for(int i=0;i<2;i++) {
+            if (i==0){
+                COORD tmp = drops[now_use_drop][now_use_element];
+            }
             else{
-                if (now_use_element+1==drops[now_use_drop].size()){
-                    SetConsoleCursorPosition(hout_menu, { drops[now_use_drop][min_index].X, drops[now_use_drop][min_index].Y-  6 });
-                    cout << " ";
+                COORD tmp = drops[now_use_drop][min_index];
+                tmp.Y-=6;
+            }
+            for (int now_use_element = 0; now_use_element < drops[now_use_drop].size(); now_use_element++) {
+
+                if (tmp.X >= 96 && tmp.X < 116 && tmp.Y >= 10 && tmp.Y <= 36) { continue; }
+                else if (tmp.X >= 82 && tmp.X <= 95 && tmp.Y >= 10 && tmp.Y < 21) { continue; }
+                else if (tmp.X >= 115 && tmp.X <= 128 && tmp.Y >= 10 && tmp.Y < 21) { continue; }
+                else {
+                    if(i==0){SetConsoleCursorPosition(hout_menu, {drops[now_use_drop][now_use_element].X,
+                                                                  drops[now_use_drop][now_use_element].Y});
+                        if (now_use_element % 2 == 0) cout << "X";
+                        else cout << "O";}
+                    else{
+                        SetConsoleCursorPosition(hout_menu, {drops[now_use_drop][min_index].X, drops[now_use_drop][min_index].Y});
+                        cout << " ";
+                    }
                 }
-                SetConsoleCursorPosition(hout_menu, {drops[now_use_drop][now_use_element].X, drops[now_use_drop][now_use_element].Y});
-                if (now_use_element % 2 == 0) cout << "X";
-                else cout << "O";
+
             }
         }
     }
