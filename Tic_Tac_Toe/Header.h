@@ -14,6 +14,6 @@ void letter_S();
 void Game(int mode_menu);
 void Check();
 void Create_field();
-void Player_turn();
+void Player_turn(int mode);
 void Bot_turn(int priority);
 void Main_menu();

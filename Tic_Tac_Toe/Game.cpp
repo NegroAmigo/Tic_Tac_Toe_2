@@ -18,65 +18,71 @@ CONSOLE_CURSOR_INFO ci;
 int game[3][3] = { 0 };
 int curX = 0;
 int curY = 0;
-bool flag;
+bool is_game_finish;
 int winner = 0;
 int turn_counter = 0;
 
 
-bool turn(int i, int j) {
+void turn(int i, int j) {
 	COORD move[3][3] = { {{c2_tmp.X + 2,c2_tmp.Y + 2}, {c2_tmp.X + 6,c2_tmp.Y + 2}, {c2_tmp.X + 10,c2_tmp.Y + 2}}, {{c2_tmp.X + 2,c2_tmp.Y + 6}, {c2_tmp.X + 6,c2_tmp.Y + 6}, {c2_tmp.X + 10,c2_tmp.Y + 6}}, {{c2_tmp.X + 2,c2_tmp.Y + 10}, {c2_tmp.X + 6,c2_tmp.Y + 10}, {c2_tmp.X + 10,c2_tmp.Y + 10}} };
-	if (game[i][j] == 0) {
-		game[i][j] = 2;
-		SetConsoleCursorPosition(hout, move[i][j]);
-		cout << "O";
-		turn_counter++;
-		return 1;
-	}
+	game[i][j] = 2;
+	SetConsoleCursorPosition(hout, move[i][j]);
+	cout << "O";
+	turn_counter++;
+	return;
 }
 
 
 void Bot_turn(int priority)
 {
 	//ход в центр
-	if (turn(1, 1)) {
+	if (game[1][1] == 0) {
+		turn(1, 1);
 		return;
 	}
 
 	//ѕеребор по столбцам и строкам
 	for (int i = 0; i < 3; i++)
 	{
-		if ((game[0][i] == priority && game[1][i] == priority) || (game[1][i] == priority && game[2][i] == priority) || (game[0][i] == priority && game[2][i] == priority)) 
-		{
-			for (int j = 0; j < 3; j++) {
-				if (turn(j, i)) {
+		if ((game[0][i] == priority && game[1][i] == priority) || (game[1][i] == priority && game[2][i] == priority) || (game[0][i] == priority && game[2][i] == priority)) {
+			for (int j = 0; j < 3; j++)
+			{
+				if (game[j][i] == 0)
+				{
+					turn(j, i);
 					return;
 				}
 			}
 		}
-		else if ((game[i][0] == priority && game[i][1] == priority) || (game[i][1] == priority && game[i][2] == priority) || (game[i][0] == priority && game[i][2] == priority)) 
+		if ((game[i][0] == priority && game[i][1] == priority) || (game[i][1] == priority && game[i][2] == priority) || (game[i][0] == priority && game[i][2] == priority))
 		{
-			for (int j = 0; j < 3; j++) {
-				if (turn(i, j)) {
+			for (int j = 0; j < 3; j++)
+			{
+				if (game[i][j] == 0)
+				{
+					turn(i, j);
 					return;
 				}
-			}
-		}
-	}
-	if ((game[0][0] == priority && game[1][1] == priority) || (game[1][1] == priority && game[2][2] == priority) || (game[0][0] == priority && game[2][2] == priority))
-	{
-		for (int j = 0; j < 3; j++)
-		{
-			if (turn(j, j)) {
-				return;
 			}
 		}
 	}
 	//перебор двух диагоналей
+	if ((game[0][0] == priority && game[1][1] == priority) || (game[1][1] == priority && game[2][2] == priority) || (game[0][0] == priority && game[2][2] == priority))
+	{
+		for (int i = 0; i < 3; i++)
+		{
+			if (game[i][i] == 0) {
+				turn(i, i);
+				return;
+			}
+		}
+	}
 	if ((game[2][0] == priority && game[1][1] == priority) || (game[1][1] == priority && game[0][2] == priority) || (game[0][2] == priority && game[2][0] == priority))
 	{
-		for (int j = 0; j < 3; j++)
+		for (int i = 0; i < 3; i++)
 		{
-			if (turn(j, 2-j)) {
+			if (game[i][2-i] == 0) {
+				turn(i, 2-i);
 				return;
 			}
 		}
@@ -85,17 +91,19 @@ void Bot_turn(int priority)
 	//ход в первую пустую
 	else
 	{
-		for (int i = 0; i < 3; i++)
+		for (int i = 0; i < 3; i++) {
 			for (int j = 0; j < 3; j++)
 			{
-				if (turn(i, j)) {
+				if (game[i][j] == 0) {
+					turn(i, j);
 					return;
 				}
 			}
+		}
 	}
 }
 
-void Player_turn()
+void Player_turn(int mode)
 {
 	int button_press;
 	COORD move[3][3] = { {{c2_tmp.X+2,c2_tmp.Y+2}, {c2_tmp.X + 6,c2_tmp.Y + 2}, {c2_tmp.X + 10,c2_tmp.Y + 2}}, {{c2_tmp.X + 2,c2_tmp.Y + 6}, {c2_tmp.X + 6,c2_tmp.Y + 6}, {c2_tmp.X + 10,c2_tmp.Y + 6}}, {{c2_tmp.X + 2,c2_tmp.Y + 10}, {c2_tmp.X + 6,c2_tmp.Y + 10}, {c2_tmp.X + 10,c2_tmp.Y + 10}} };
@@ -178,14 +186,13 @@ void Game(int mode_menu)
 
 
 	SetConsoleCursorPosition(hout, { 35,9 });
-	flag = true;
-	mode = mode_menu;
-	while (flag)
+	is_game_finish = true;
+	while (is_game_finish)
 	{
-		Player_turn();
+		Player_turn(mode_menu);
 		Check();
-		if (flag == 0) break;
-		if (mode == 0)
+		if (is_game_finish == 0) break;
+		if (mode_menu == 2)
 		{
 			Bot_turn(2);
 			Check();
@@ -193,52 +200,51 @@ void Game(int mode_menu)
 	}
 	SetConsoleCursorPosition(hout, inf_out);
 	cout << "                ";
-	SetConsoleCursorPosition(hout, { 33, 6 });
-	cout << "                ";
 	SetConsoleCursorPosition(hout, inf_out);
+	ci.bVisible = false;
+	SetConsoleCursorInfo(hout, &ci);
 	if (winner == 1) {
-		if (mode == 0) cout << "Player win!";
-		if (mode == 1) cout << "Player 1 win!";
+		if (mode_menu == 1) { cout << "Player 1 win!"; _getch(); }
+		if (mode_menu == 2) {cout << "Player win!"; _getch();}
 	}
 	else if (winner == 2) {
-
-		if (mode == 0) cout << "Computer win!";
-		if (mode == 1) cout << "Player 2 win!";
+		if (mode_menu == 1) { cout << "Player 2 win!"; _getch(); }
+		if (mode_menu == 2) { cout << "Computer win!"; _getch();}
 	}
 	else
 	{
-		SetConsoleCursorPosition(hout, inf_out);
 		cout << "Tie!";
+		_getch();
 	}
-	ci.bVisible = false;
-	SetConsoleCursorInfo(hout, &ci);
 	return;
 }
 
 void Check()
 {
-	if (turn_counter == 9) flag = 0; return;
 	for (int i = 0; i < 3; i++)
 	{
-		if ((game[0][i] == game[1][i] and game[0][i] == game[2][i]) and game[0][i] != 0)
+		if (game[0][i] == game[1][i] && game[1][i] == game[2][i])
 		{
-			if (game[0][i] == 1) winner = 1;
-			else if (game[0][i] == 2) winner = 2;
-			flag = 0;
-			return;
+			if (game[0][i] != 0 && game[1][i] != 0 && game[2][i] != 0)
+			{
+				if (game[0][i] == 1) winner = 1;
+				else if (game[0][i] == 2) winner = 2;
+				is_game_finish = 0;
+				return;
+			}
+		}
+		if (game[i][0] == game[i][1] && game[i][1] == game[i][2])
+		{
+			if (game[i][0] != 0 && game[i][1] != 0 && game[i][2] != 0)
+			{
+				if (game[i][0] == 1) winner = 1;
+				else if (game[i][0] == 2) winner = 2;
+				is_game_finish = 0;
+				return;
+			}
 		}
 	}
-	for (int i = 0; i < 3; i++)
-	{
-		if ((game[i][0] == game[i][1] && game[i][0] == game[i][2]) and game[i][0] != 0)
-		{
-			if (game[i][0] == 1) winner = 1;
-			else if (game[i][0] == 2) winner = 2;
-			flag = 0;
-			return;
-		}
-	}
-	if (game[0][0] == game[1][1] && game[0][0] == game[2][2]) //диагональ слева на право
+	if (game[0][0] == game[1][1] && game[1][1] == game[2][2]) //диагональ слева на право
 	{
 		if (game[0][0] == 1)
 		{
@@ -248,7 +254,7 @@ void Check()
 		{
 			winner = 2;
 		}
-		flag = 0;
+		is_game_finish = 0;
 		return;
 	}
 	if (game[2][0] == game[1][1] && game[1][1] == game[0][2]) //диагональ справа на лево
@@ -256,13 +262,15 @@ void Check()
 		if (game[2][0] == 1)
 		{
 			winner = 1;
+			is_game_finish = 0;
 		}
 		else if (game[2][0] == 2)
 		{
 			winner = 2;
+			is_game_finish = 0;
 		}
-		flag = 0;
 		return;
 	}
+	if (turn_counter == 9) is_game_finish = 0; return;
 }
 
