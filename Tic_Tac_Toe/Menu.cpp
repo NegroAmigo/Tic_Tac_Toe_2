@@ -241,6 +241,7 @@ void Main_menu() {
 
     while (true) {
         Drops();
+        Welcome_screen();
         if (_kbhit())
         {
             int y = _getch();
@@ -332,37 +333,20 @@ void Drops() {
                 if (drops[now_use_drop].size() > 1)
                 {
                     drops[now_use_drop].erase(drops[now_use_drop].begin() + now_use_element);
-                    //drops[now_use_drop].resize(drops[now_use_drop].size() - 1);
-                    //what_the_fuck_is_this = true;
-                    break;
                 }
                 if (drops[now_use_drop].size() == 1)
                 {
-
                     drops.erase(drops.begin() + now_use_drop);
-                    //drops.resize(drops.size() - 1);
                     what_the_fuck_is_this = true;
                     break;
                 }
-                /*auto del = std::find(drops[now_use_drop].begin(), drops[now_use_drop].end(), drops[now_use_drop][now_use_element]);
-                if(del != drops[now_use_drop].end())
-                {
-                    drops[now_use_drop].erase(del);
-                }
-                else
-                {
-                    auto del = std::find(drops.begin(), drops.end(), drops[now_use_drop]);
-                    drops.erase(del);
-                    now_use_element=-1;
-                    break;
-                }*/
             }
         }
         if(what_the_fuck_is_this)
         {
             continue;
         }
-
+        system("cls");
         for (int now_use_element = 0; now_use_element < drops[now_use_drop].size(); now_use_element++){
             COORD tmp = drops[now_use_drop][now_use_element];
             if (tmp.X >= 96 && tmp.X < 116 && tmp.Y >= 10 && tmp.Y <= 36) { continue; }
@@ -376,39 +360,6 @@ void Drops() {
                 else cout << "O";
             }
         }
-        /*if (drops[now_use_drop][max_index].Y < 54) {
-            if (drops[now_use_drop][min_index].Y > cmain.Y-1 && drops[now_use_drop][min_index].Y < (cmain.Y + 11) && drops[i][min_index].X > cmain.X-1 && drops[i][min_index].X < (cmain.X+47)  || drops[i][min_index].Y > cmain.Y+11 && drops[i][min_index].Y < (cmain.Y + 22) && drops[i][min_index].X > cmain.X+13 && drops[i][min_index].X < (cmain.X + 34))
-            {
-                drops[i][min_index].Y += (short)6;
-            }
-            else
-            {
-                SetConsoleCursorPosition(hout_menu, { drops[i][min_index].X,drops[i][min_index].Y });
-                cout << " ";
-                if (drops[i][min_index].Y+6 > cmain.Y - 1 && drops[i][min_index].Y+6 < (cmain.Y + 11) && drops[i][min_index].X > cmain.X - 1 && drops[i][min_index].X < (cmain.X + 47) || drops[i][min_index].Y+6 > cmain.Y + 11 && drops[i][min_index].Y+6 < (cmain.Y + 22) && drops[i][min_index].X > cmain.X + 13 && drops[i][min_index].X < (cmain.X + 34)) {
-                    drops[i][min_index].Y += (short)6;
-                }
-                else {
-                    drops[i][min_index].Y += (short)6;
-                    SetConsoleCursorPosition(hout_menu, { drops[i][min_index].X,drops[i][min_index].Y });
-                    if (i % 2 == 0) cout << "X";
-                    else cout << "O";
-                }
-            }
-            if (drops[i][min_index].Y > cmain.Y - 1 && drops[i][min_index].Y < (cmain.Y + 11) && drops[i][min_index].X > cmain.X - 1 && drops[i][min_index].X < (cmain.X + 47) || drops[i][min_index].Y > cmain.Y + 11 && drops[i][min_index].Y < (cmain.Y + 22) && drops[i][min_index].X > cmain.X + 13 && drops[i][min_index].X < (cmain.X + 34)) {
-
-            }
-            else {
-                SetConsoleCursorPosition(hout_menu, { drops[i][min_index].X,drops[i][min_index].Y });
-                if (i % 2 == 0) cout << "X";
-                else cout << "O";
-            }
-        }
-        else {
-            SetConsoleCursorPosition(hout_menu, { drops[i][min_index].X,drops[i][min_index].Y });
-            cout << " ";
-            drops[i][min_index].Y += (short)6;
-        }*/
     }
     Sleep(20);
 }
@@ -424,8 +375,8 @@ int main() {
 
 
     while (true) {
-        system("cls");
-        Welcome_screen();
+//        system("cls");
+//        Welcome_screen();
 
         Main_menu();
     }
