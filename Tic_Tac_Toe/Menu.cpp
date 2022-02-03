@@ -267,8 +267,7 @@ void Create_field()
 }
 
 
-bool flag_wait = false;
-bool flag_cringe = false;
+
 void Main_menu()
 {
     int curY_menu = 0;
@@ -278,12 +277,12 @@ void Main_menu()
     for (int but_draw = 1; but_draw < 5; but_draw++) {
         Draw_Butt(false, but_draw, frame[but_draw]);
     }
-    
-    
+    smphSignalDropsToMenu.release();
     while (true)
     {
         int y = _getch();
-
+        is_th_work = true;
+        smphSignalMenuToDrops.acquire();
         switch (y)
         {
         case 72:
@@ -328,13 +327,14 @@ void Main_menu()
             }
             break;
         }
+        smphSignalDropsToMenu.release();
     }
 }
 
 
 void Drops()
 {
-
+    smphSignalDropsToMenu.acquire();
     vector <vector<COORD>> drops;
     HANDLE hout_menu = GetStdHandle(STD_OUTPUT_HANDLE);
     CONSOLE_CURSOR_INFO ci2;
@@ -349,13 +349,16 @@ void Drops()
     int width = 1920;
     int height = 1080;
 
-    
     drops.push_back(vector<COORD>());
     srand((unsigned int)time(NULL));
 
     while (true)
     {
-
+        if (is_th_work) {
+            is_th_work = false;
+            smphSignalMenuToDrops.release();
+            smphSignalDropsToMenu.acquire();
+        }
         x = rand() % 210;
         //создание новой сопли
         for (int i = 0; i < 6; i++)
@@ -387,7 +390,7 @@ void Drops()
                           
             
             if (drops[i][min_index].Y+6 < 54) {
-                if (drops[i][min_index].Y > cmain.Y-1 && drops[i][min_index].Y < (cmain.Y + 11) && drops[i][min_index].X > cmain.X-1 && drops[i][min_index].X < (cmain.X+47)  || drops[i][min_index].Y > cmain.Y+11 && drops[i][min_index].Y < (cmain.Y + 22) && drops[i][min_index].X > cmain.X+13 && drops[i][min_index].X < (cmain.X + 34))
+                if (drops[i][min_index].Y > cmain.Y-1 && drops[i][min_index].Y < (cmain.Y + 11) && drops[i][min_index].X > cmain.X-1 && drops[i][min_index].X < (cmain.X+47)  || drops[i][min_index].Y > cmain.Y+10 && drops[i][min_index].Y < (cmain.Y + 27) && drops[i][min_index].X > cmain.X+13 && drops[i][min_index].X < (cmain.X + 34))
                 {
                     drops[i][min_index].Y += (short)6; 
                 }
@@ -395,7 +398,7 @@ void Drops()
                 {
                     SetConsoleCursorPosition(hout_menu, { drops[i][min_index].X,drops[i][min_index].Y });
                     cout << " ";
-                    if (drops[i][min_index].Y+6 > cmain.Y - 1 && drops[i][min_index].Y+6 < (cmain.Y + 11) && drops[i][min_index].X > cmain.X - 1 && drops[i][min_index].X < (cmain.X + 47) || drops[i][min_index].Y+6 > cmain.Y + 11 && drops[i][min_index].Y+6 < (cmain.Y + 22) && drops[i][min_index].X > cmain.X + 13 && drops[i][min_index].X < (cmain.X + 34)) {
+                    if (drops[i][min_index].Y+6 > cmain.Y - 1 && drops[i][min_index].Y+6 < (cmain.Y + 11) && drops[i][min_index].X > cmain.X - 1 && drops[i][min_index].X < (cmain.X + 47) || drops[i][min_index].Y+6 > cmain.Y + 10 && drops[i][min_index].Y+6 < (cmain.Y + 27) && drops[i][min_index].X > cmain.X + 13 && drops[i][min_index].X < (cmain.X + 34)) {
                         drops[i][min_index].Y += (short)6;
                     }
                     else {
@@ -405,7 +408,7 @@ void Drops()
                         else cout << "O";
                     } 
                 }
-                if (drops[i][min_index].Y > cmain.Y - 1 && drops[i][min_index].Y < (cmain.Y + 11) && drops[i][min_index].X > cmain.X - 1 && drops[i][min_index].X < (cmain.X + 47) || drops[i][min_index].Y > cmain.Y + 11 && drops[i][min_index].Y < (cmain.Y + 22) && drops[i][min_index].X > cmain.X + 13 && drops[i][min_index].X < (cmain.X + 34)) {
+                if (drops[i][min_index].Y > cmain.Y - 1 && drops[i][min_index].Y < (cmain.Y + 11) && drops[i][min_index].X > cmain.X - 1 && drops[i][min_index].X < (cmain.X + 47) || drops[i][min_index].Y > cmain.Y + 10 && drops[i][min_index].Y < (cmain.Y + 27) && drops[i][min_index].X > cmain.X + 13 && drops[i][min_index].X < (cmain.X + 34)) {
 
                 }
                 else {
@@ -445,12 +448,10 @@ int main()
     ci1.dwSize = 100;
     ci1.bVisible = false;
     SetConsoleCursorInfo(hout_menu, &ci1);
-
+    thread th(Drops);
     while (true) {
         system("cls");
         Welcome_screen();
-
-        //thread th(Drops);
 
         Main_menu();
         
