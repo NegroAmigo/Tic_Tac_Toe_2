@@ -347,8 +347,8 @@ void Drops() {
         }
         for (int now_use_element = 0; now_use_element < drops[now_use_drop].size(); now_use_element++){
             COORD tmp = drops[now_use_drop][now_use_element];
-            COORD tmp_tmp = drops[now_use_drop][now_use_element];
-            tmp_tmp.Y=tmp_tmp-6;
+            COORD tmp_tmp = drops[now_use_drop][min_index];
+            tmp_tmp.Y=tmp_tmp.Y-6;
             if (tmp_tmp.X >= 96 && tmp_tmp.X < 116 && tmp_tmp.Y >= 10 && tmp_tmp.Y <= 36) { continue; }
             else if (tmp_tmp.X >= 82 && tmp_tmp.X <= 95 && tmp_tmp.Y >= 10 && tmp_tmp.Y < 21) { continue; }
             else if (tmp_tmp.X >= 115 && tmp_tmp.X <= 128 && tmp_tmp.Y >= 10 && tmp_tmp.Y < 21) { continue; }
