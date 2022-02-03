@@ -216,6 +216,7 @@ void Game(int mode_menu)
 		cout << "Tie!";
 		_getch();
 	}
+
 	return;
 }
 

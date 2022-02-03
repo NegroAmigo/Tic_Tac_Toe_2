@@ -240,9 +240,12 @@ void Main_menu() {
     }
 
     while (true) {
-        int y = _getch();
         Drops();
-        switch (y) {
+        if (_kbhit())
+        {
+            int y = _getch();
+            switch (y)
+            {
             case 72:
                 Draw_Butt(false, curY_menu, frame[curY_menu]);
                 if (curY_menu - 1 < 0) curY_menu = 4;
@@ -260,22 +263,31 @@ void Main_menu() {
                     Create_field();
                     Game(2);
                     return;
-                } else if (curY_menu == 1) {
+                }
+                else if (curY_menu == 1) {
                     Create_field();
                     Game(1);
                     return;
-                } else if (curY_menu == 2) {
+                }
+                else if (curY_menu == 2) {
                     /* do some
                     option shit*/
-                } else if (curY_menu == 3) {
+                }
+                else if (curY_menu == 3) {
                     /* do some
                     credits shit*/
-                } else if (curY_menu == 4) {
+                }
+                else if (curY_menu == 4) {
                     system("cls");
                     exit(0);
                 }
                 break;
+            }
         }
+        
+        
+        
+        
     }
 }
 
@@ -298,7 +310,7 @@ void Drops() {
         int min_index = 0;
         int now_use_element=0;
         //Нахождение максимального значения капли
-        for (now_use_element = 0; now_use_element < 6; now_use_element++)
+        for (now_use_element = 0; now_use_element < drops[now_use_drop].size(); now_use_element++)
         {
             if (drops[now_use_drop][now_use_element].Y < min)
             {
@@ -306,37 +318,60 @@ void Drops() {
                 min_index = now_use_element;
             }
         }
+        //Перемещение минимального элемента вниз
+
+        drops[now_use_drop][min_index].Y += 6;
 
         //Удаление сопли или елементов выходящих за область отрисовки
-        for (now_use_element = 0; now_use_element < drops[now_use_drop].size(); now_use_element++)
+        bool what_the_fuck_is_this = false;
+        for (int now_use_element = 0; now_use_element < drops[now_use_drop].size(); now_use_element++)
         {
             COORD tmp = drops[now_use_drop][now_use_element];
-            if (tmp.Y > 54)
+            if (tmp.Y >= 54)
             {
-                auto del = std::find(drops[now_use_drop].begin(), drops[now_use_drop].end(), now_use_element);
+                if (drops[now_use_drop].size() > 1)
+                {
+                    drops[now_use_drop].erase(drops[now_use_drop].begin() + now_use_element);
+                    //drops[now_use_drop].resize(drops[now_use_drop].size() - 1);
+                    //what_the_fuck_is_this = true;
+                    break;
+                }
+                if (drops[now_use_drop].size() == 1)
+                {
+
+                    drops.erase(drops.begin() + now_use_drop);
+                    //drops.resize(drops.size() - 1);
+                    what_the_fuck_is_this = true;
+                    break;
+                }
+                /*auto del = std::find(drops[now_use_drop].begin(), drops[now_use_drop].end(), drops[now_use_drop][now_use_element]);
                 if(del != drops[now_use_drop].end())
                 {
                     drops[now_use_drop].erase(del);
                 }
                 else
                 {
-                    auto del = std::find(drops.begin(), drops.end(), now_use_drop);
+                    auto del = std::find(drops.begin(), drops.end(), drops[now_use_drop]);
                     drops.erase(del);
                     now_use_element=-1;
                     break;
-                }
+                }*/
             }
         }
-        if(now_use_element==-1){ continue;}
+        if(what_the_fuck_is_this)
+        {
+            continue;
+        }
 
-        for (now_use_element = 0; now_use_element < drops[now_use_drop].size(); now_use_element++){
+        for (int now_use_element = 0; now_use_element < drops[now_use_drop].size(); now_use_element++){
             COORD tmp = drops[now_use_drop][now_use_element];
-            if(tmp.X>=96 && tmp.X<=116 && tmp.Y>=10 && tmp.Y<=36){continue;}
-            else if(tmp.X>=82 && tmp.X<=95 && tmp.Y>=10 && tmp.Y<=21){ continue;}
-            else if(tmp.X>=115 && tmp.X<=128 && tmp.Y>=10 && tmp.Y<=21){ continue;}
+            if (tmp.X >= 96 && tmp.X < 116 && tmp.Y >= 10 && tmp.Y <= 36) { continue; }
+            else if (tmp.X >= 82 && tmp.X <= 95 && tmp.Y >= 10 && tmp.Y < 21) { continue; }
+            else if (tmp.X >= 115 && tmp.X <= 128 && tmp.Y >= 10 && tmp.Y < 21) { continue; }
             else{
-                SetConsoleCursorPosition(hout_menu, {drops[now_use_drop][now_use_element].X,
-                                                     drops[now_use_drop][now_use_element].Y});
+                SetConsoleCursorPosition(hout_menu, { drops[now_use_drop][min_index].X, drops[now_use_drop][min_index].Y-  6 });
+                cout << " ";
+                SetConsoleCursorPosition(hout_menu, {drops[now_use_drop][now_use_element].X, drops[now_use_drop][now_use_element].Y});
                 if (now_use_element % 2 == 0) cout << "X";
                 else cout << "O";
             }
