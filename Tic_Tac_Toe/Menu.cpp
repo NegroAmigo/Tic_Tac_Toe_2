@@ -241,7 +241,6 @@ void Main_menu() {
 
     while (true) {
         Drops();
-        Welcome_screen();
         if (_kbhit())
         {
             int y = _getch();
@@ -346,7 +345,7 @@ void Drops() {
         {
             continue;
         }
-        system("cls");
+
         for (int now_use_element = 0; now_use_element < drops[now_use_drop].size(); now_use_element++){
             COORD tmp = drops[now_use_drop][now_use_element];
             if (tmp.X >= 96 && tmp.X < 116 && tmp.Y >= 10 && tmp.Y <= 36) { continue; }
@@ -375,8 +374,8 @@ int main() {
 
 
     while (true) {
-//        system("cls");
-//        Welcome_screen();
+        system("cls");
+        Welcome_screen();
 
         Main_menu();
     }
