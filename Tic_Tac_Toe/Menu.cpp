@@ -15,7 +15,6 @@ using namespace std;
 
 CONSOLE_CURSOR_INFO ci1;
 
-thread th;
 COORD c1;
 COORD c_letters = cmain;
 HANDLE hout_menu;
@@ -336,21 +335,13 @@ void Drops()
 {
     smphSignalDropsToMenu.acquire();
     vector <vector<COORD>> drops;
-    HANDLE hout_menu = GetStdHandle(STD_OUTPUT_HANDLE);
-    CONSOLE_CURSOR_INFO ci2;
-    ci2.dwSize = 100;
-    ci2.bVisible = false;
-    SetConsoleCursorInfo(hout_menu, &ci2);
-
     
     short x;
     int new_drop = 0;
     short min;
-    int width = 1920;
-    int height = 1080;
 
     drops.push_back(vector<COORD>());
-    srand((unsigned int)time(NULL));
+    
 
     while (true)
     {
@@ -448,7 +439,10 @@ int main()
     ci1.dwSize = 100;
     ci1.bVisible = false;
     SetConsoleCursorInfo(hout_menu, &ci1);
+
+    srand((unsigned int)time(NULL));
     thread th(Drops);
+    
     while (true) {
         system("cls");
         Welcome_screen();
